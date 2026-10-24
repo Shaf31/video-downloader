@@ -1,0 +1,35 @@
+# Builds standalone apps for macOS, Windows and Linux on GitHub's machines.
+# Push this "source" folder to a GitHub repo, open Actions > Build > Run workflow,
+# then download the three zips from the run's "Artifacts" section.
+name: Build
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-14, name: Mac }
+          - { os: windows-latest, name: Windows }
+          - { os: ubuntu-22.04, name: Linux }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        shell: bash
+        run: |
+          pip install -r requirements.txt pyinstaller pillow
+          if [ "${{ matrix.name }}" != "Linux" ]; then pip install pywebview; fi
+      - name: Build
+        run: python build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Video-Downloader-${{ matrix.name }}
+          path: dist/

@@ -1,0 +1,5 @@
+flask>=3.0
+# "deno" bundles the JS runtime YouTube needs for its highest qualities.
+yt-dlp[default,deno]
+# Portable ffmpeg (used when ffmpeg isn't installed on the system).
+imageio-ffmpeg
