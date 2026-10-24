@@ -320,6 +320,10 @@ $('paste').onclick = async () => {
   catch { $('url').focus(); setStatus('Press ⌘V to paste into the field.'); }
 };
 
+// Opening the app with ?url=<link> loads that link straight away.
+const linkParam = new URLSearchParams(location.search).get('url');
+if (linkParam) { $('url').value = linkParam; fetchInfo(); }
+
 let revealLabel = 'Show in folder';
 fetch('/api/status').then(r => r.json()).then(s => {
   revealLabel = s.platform === 'darwin' ? 'Show in Finder' : s.platform === 'win32' ? 'Show in Explorer' : 'Show in folder';
